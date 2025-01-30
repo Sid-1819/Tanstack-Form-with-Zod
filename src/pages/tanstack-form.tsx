@@ -80,7 +80,7 @@ const TanStackForm: React.FC = () => {
         {([canSubmit, isValidating]) => (
           <Button 
             type="submit" 
-            disabled={!canSubmit || isValidating}
+            disabled={!canSubmit || isValidating || isDirty}
             onClick={form.handleSubmit}
           >
             Submit
