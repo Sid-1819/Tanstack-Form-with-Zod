@@ -41,47 +41,47 @@ const TanStackForm: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Zod Form Example</h1>
-      <div className="mb-4 text-sm">
-        Form is {isDirty ? "dirty" : "pristine"}
+    <div className="max-w-md mx-auto p-6 bg-white shadow-lg rounded-xl border border-gray-200">
+      <h1 className="text-2xl font-bold mb-6 text-gray-800 text-center">
+        Zod Form Example
+      </h1>
+  
+      <div className="mb-4 text-sm text-gray-500 text-center">
+        Form is <span className={`font-semibold ${isDirty ? "text-red-500" : "text-green-500"}`}>{isDirty ? "dirty" : "pristine"}</span>
       </div>
-
-      <form.Field
-        name="firstName"
-        validators={{ onChangeAsyncDebounceMs: 500 }}
-      >
-        {(field) => (
-          <FormField 
-            id="firstName" 
-            label="First Name" 
-            field={field} 
-            onChange={() => checkDirtyState(form.state.values)}
-          />
-        )}
-      </form.Field>
-
-      <form.Field
-        name="lastName"
-        validators={{ onChangeAsyncDebounceMs: 500 }}
-      >
-        {(field) => (
-          <FormField 
-            id="lastName" 
-            label="Last Name" 
-            field={field} 
-            type="textarea"
-            onChange={() => checkDirtyState(form.state.values)}
-          />
-        )}
-      </form.Field>
-
+  
+      <div className="space-y-4">
+        <form.Field name="firstName" validators={{ onChangeAsyncDebounceMs: 500 }}>
+          {(field) => (
+            <FormField
+              id="firstName"
+              label="First Name"
+              field={field}
+              onChange={() => checkDirtyState(form.state.values)}
+            />
+          )}
+        </form.Field>
+  
+        <form.Field name="lastName" validators={{ onChangeAsyncDebounceMs: 500 }}>
+          {(field) => (
+            <FormField
+              id="lastName"
+              label="Last Name"
+              field={field}
+              type="textarea"
+              onChange={() => checkDirtyState(form.state.values)}
+            />
+          )}
+        </form.Field>
+      </div>
+  
       <form.Subscribe selector={(state) => [state.canSubmit, state.isValidating]}>
         {([canSubmit, isValidating]) => (
-          <Button 
-            type="submit" 
-            disabled={!canSubmit || isValidating || isDirty}
+          <Button
+            type="submit"
+            disabled={!canSubmit || isValidating || !isDirty}
             onClick={form.handleSubmit}
+            className="w-full mt-4 bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition-all hover:bg-blue-700 disabled:bg-gray-300"
           >
             Submit
           </Button>
@@ -89,6 +89,7 @@ const TanStackForm: React.FC = () => {
       </form.Subscribe>
     </div>
   );
+  
 };
 
 interface FormFieldProps {
