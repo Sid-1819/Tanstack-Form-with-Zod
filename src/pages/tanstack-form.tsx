@@ -41,54 +41,78 @@ const TanStackForm: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white shadow-lg rounded-xl border border-gray-200">
+    <div className="max-w-md mx-auto p-6 bg-white shadow-xl rounded-2xl border border-gray-200 transition-all duration-300">
       <h1 className="text-2xl font-bold mb-6 text-gray-800 text-center">
-        Zod Form Example
+        TanStack Zod Form with Custom isDirty Example
       </h1>
   
+      {/* Form Status */}
       <div className="mb-4 text-sm text-gray-500 text-center">
-        Form is <span className={`font-semibold ${isDirty ? "text-red-500" : "text-green-500"}`}>{isDirty ? "dirty" : "pristine"}</span>
+        Form is{" "}
+        <span
+          className={`font-semibold transition-colors duration-300 ${
+            isDirty ? "text-red-500" : "text-green-500"
+          }`}
+        >
+          {isDirty ? "dirty" : "pristine"}
+        </span>
       </div>
   
       <div className="space-y-4">
+        {/* First Name Field */}
         <form.Field name="firstName" validators={{ onChangeAsyncDebounceMs: 500 }}>
           {(field) => (
-            <FormField
-              id="firstName"
-              label="First Name"
-              field={field}
-              onChange={() => checkDirtyState(form.state.values)}
-            />
+            <div className="relative group">
+              <FormField
+                id="firstName"
+                label="First Name"
+                field={field}
+                className="transition-all duration-300 focus:ring-2 focus:ring-blue-500"
+                onChange={() => checkDirtyState(form.state.values)}
+              />
+              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500 scale-x-0 group-focus-within:scale-x-100 transition-transform duration-300"></span>
+            </div>
           )}
         </form.Field>
   
+        {/* Last Name Field */}
         <form.Field name="lastName" validators={{ onChangeAsyncDebounceMs: 500 }}>
           {(field) => (
-            <FormField
-              id="lastName"
-              label="Last Name"
-              field={field}
-              type="textarea"
-              onChange={() => checkDirtyState(form.state.values)}
-            />
+            <div className="relative group">
+              <FormField
+                id="lastName"
+                label="Last Name"
+                field={field}
+                type="text"
+                className="transition-all duration-300 focus:ring-2 focus:ring-blue-500"
+                onChange={() => checkDirtyState(form.state.values)}
+              />
+              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500 scale-x-0 group-focus-within:scale-x-100 transition-transform duration-300"></span>
+            </div>
           )}
         </form.Field>
       </div>
   
+      {/* Submit Button */}
       <form.Subscribe selector={(state) => [state.canSubmit, state.isValidating]}>
         {([canSubmit, isValidating]) => (
-          <Button
+          <button
             type="submit"
             disabled={!canSubmit || isValidating || !isDirty}
             onClick={form.handleSubmit}
-            className="w-full mt-4 bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition-all hover:bg-blue-700 disabled:bg-gray-300"
+            className={`w-full mt-4 py-2 px-4 text-white font-semibold rounded-lg transition-all duration-300 ${
+              canSubmit && isDirty
+                ? "bg-blue-600 hover:bg-blue-700 active:scale-95"
+                : "bg-gray-300 cursor-not-allowed"
+            }`}
           >
             Submit
-          </Button>
+          </button>
         )}
       </form.Subscribe>
     </div>
   );
+  
   
 };
 
@@ -98,6 +122,7 @@ interface FormFieldProps {
   field: any;
   type?: 'text' | 'textarea';
   placeholder?: string;
+  className: string;
   onChange?: () => void;
 }
 
@@ -107,7 +132,8 @@ const FormField: React.FC<FormFieldProps> = ({
   field, 
   type = 'text', 
   placeholder = '',
-  onChange 
+  onChange ,
+  className = ''  
 }) => {
   const FieldComponent = type === 'textarea' ? Textarea : Input;
 
@@ -123,10 +149,10 @@ const FormField: React.FC<FormFieldProps> = ({
       </Label>
       <FieldComponent
         id={id}
-        className="w-full"
         value={field.state.value}
         onChange={(e) => handleChange(e.target.value)}
         placeholder={placeholder}
+        className={className}
       />
       {field.state.meta.errors && (
         <p className="text-destructive text-sm mt-1">{field.state.meta.errors}</p>
